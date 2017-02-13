@@ -16,4 +16,5 @@ _REDIRECTOR_TYPE_ can be set to either **redirect** or **permanant**
         --env=REDIRECTOR_DESTINATION=http://perdu.com \
         --env=REDIRECTOR_TYPE=redirect
         --expose --port=8080
+        
     oc expose svc redirector
