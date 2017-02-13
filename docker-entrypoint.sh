@@ -2,8 +2,8 @@
 if [[ -z "$REDIRECTOR_DESTINATION" ]]; then echo "Variable REDIRECTOR_DESTINATION not set. Aborting."; exit 1; fi
 if [[ -z "$REDIRECTOR_TYPE" ]]; then echo "Variable REDIRECTOR_TYPE not set. Aborting."; exit 1; fi
 
-if [[ "$REDIRECTOR_TYPE" != "temporary" ]] && [[ "$REDIRECTOR_TYPE" != "permanent" ]]; then
-    echo "REDIRECTOR_TYPE should be set to either temporary or permanent. Aborting."
+if [[ "$REDIRECTOR_TYPE" != "redirect" ]] && [[ "$REDIRECTOR_TYPE" != "permanent" ]]; then
+    echo "REDIRECTOR_TYPE should be set to either redirect or permanent. Aborting."
     exit 1;
 fi
 
