@@ -13,7 +13,7 @@ _REDIRECTOR_TYPE_ can be set to either **redirect** or **permanant**
 
     oc run redirector \
         --image=jfchevrette/nginx-redirector \
-        --env=REDIRECTOR_DESTINATION=http://perdu.com \
+        --env=REDIRECTOR_DESTINATION=http://some-domain.com \
         --env=REDIRECTOR_TYPE=redirect
         --expose --port=8080
         
