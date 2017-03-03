@@ -1,11 +1,8 @@
-FROM centos:7
+FROM registry.centos.org/kbsingh/openshift-nginx:latest
 
 MAINTAINER Jean-Francois Chevrette <jfchevrette@gmail.com>
 
-RUN sh -x && \
-    yum -y install epel-release && \
-    yum -y install nginx && \
-    yum clean all
+USER root
 
 RUN chmod -R 777 /var/lib/nginx
 
