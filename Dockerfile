@@ -4,7 +4,7 @@ MAINTAINER Jean-Francois Chevrette <jfchevrette@gmail.com>
 
 # Labels consumed by the build service
 LABEL Component="nginx-redirector" \
-      Name="mattermost/nginx-redirector" \
+      Name="nginx-redirector" \
       Version="1"
 
 USER root
