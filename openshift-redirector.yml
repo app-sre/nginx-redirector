@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: redirector
+objects:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    labels:
+      app.kubernetes.io/name: redirector
+      app.kubernetes.io/component: web
+    name: redirector
+  spec:
+    replicas: ${{REPLICAS}}
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: redirector
+        app.kubernetes.io/component: web
+    strategy:
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 10
+        updatePeriodSeconds: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/name: redirector
+          app.kubernetes.io/component: web
+      spec:
+        restartPolicy: Always
+        serviceAccountName: redirector
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - web
+              topologyKey: "kubernetes.io/hostname"
+        containers:
+        - env:
+          - name: REDIRECTOR_DESTINATION
+            value: ${REDIRECTOR_DESTINATION}
+          - name: REDIRECTOR_TYPE
+            value: ${REDIRECTOR_TYPE}
+          image: ${IMAGE}:${IMAGE_TAG}
+          imagePullPolicy: Always
+          name: redirector
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            requests:
+              cpu: ${{CPU_REQUESTS}}
+              memory: ${{MEMORY_REQUESTS}}
+            limits:
+              cpu: ${{CPU_LIMITS}}
+              memory: ${{MEMORY_LIMITS}}
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+        terminationGracePeriodSeconds: 5
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: redirector
+    labels:
+      app.kubernetes.io/component: web
+      app.kubernetes.io/name: redirector
+  spec:
+    ports:
+    - name: "8080"
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app.kubernetes.io/name: redirector
+      app.kubernetes.io/component: web
+    type: ClusterIP
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    labels:
+      app.kubernetes.io/name: redirector
+    name: redirector
+
+parameters:
+- name: IMAGE
+  value: "quay.io/app-sre/nginx-redirector"
+
+- name: IMAGE_TAG
+  value: "latest"
+
+- name: REPLICAS
+  value: "3"
+  displayName: Redirector replicas
+  description: The number of replicas for the devfile.io redirector service.
+
+- name: MEMORY_REQUESTS
+  description: memory requests
+  value: "64Mi"
+  required: true
+
+- name: MEMORY_LIMITS
+  description: memory limits
+  value: "64Mi"
+  required: true
+
+- name: CPU_REQUESTS
+  description: cpu requests
+  value: "100m"
+  required: true
+
+- name: CPU_LIMITS
+  description: cpu limits
+  value: "100m"
+  required: true
+
+- name: REDIRECTOR_DESTINATION
+  description: The destination URL for the redirector.
+  required: true
+
+- name: REDIRECTOR_TYPE
+  description: The redirection type: permanent (HTTP 301) or redirect (HTTP 302).
+  value: "permanent"
+  required: true
