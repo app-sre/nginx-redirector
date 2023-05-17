@@ -108,7 +108,7 @@ parameters:
 - name: REPLICAS
   value: "3"
   displayName: Redirector replicas
-  description: The number of replicas for the devfile.io redirector service.
+  description: The number of replicas for the redirector service.
 
 - name: MEMORY_REQUESTS
   description: memory requests
@@ -135,6 +135,6 @@ parameters:
   required: true
 
 - name: REDIRECTOR_TYPE
-  description: The redirection type: permanent (HTTP 301) or redirect (HTTP 302).
+  description: The redirection type - permanent (HTTP 301) or redirect (HTTP 302).
   value: "permanent"
   required: true
