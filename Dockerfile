@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/nginx-118:latest
+FROM registry.access.redhat.com/ubi9/nginx-120:latest
 
 COPY nginx.conf.template /
 COPY docker-entrypoint.sh /
